@@ -18,10 +18,12 @@ let juegos = [
     { id: 16, title: "Driver Booster 7", genre: "Utilities", type: "App", developer: "iObit", publisher: "iObit", pegi: "E", precio: 0 },
     { id: 18, title: "Wallpaper Engine", genre: "Utilities", type: "App", developer: "Wallpaper Engine Team", publisher: "Wallpaper Engine Team", pegi: "E", precio: 9.99 }
 ];
+
 let carritoJSON = JSON.parse(localStorage.getItem("carrito"))
 let carrito = carritoJSON ? carritoJSON : []
 renderizarCarrito(carrito)
-    
+
+
 function programaPrincipal() {
     botonCarrito = document.getElementById("botonCarrito")
     botonCarrito.addEventListener("click",mostrarOcultar)
@@ -34,24 +36,39 @@ function programaPrincipal() {
 
 programaPrincipal()
 
-function botonGeneroDinamico(e) {
-    let contenedorGenerosDinamicos = document.getElementById('contenedorGenerosDinamicos')
-    contenedorGenerosDinamicos.innerHTML = ''
-    let generos = []
-    e.forEach(element => {
-        !generos.includes(element.genre) ? generos.push(element.genre) : null
-            }
-        )
-    generos.forEach(genero => {
-        let liGenero = document.createElement('li')
-        liGenero.innerHTML = `<button id="${genero}" value="${genero}">${genero}</button>`
-        contenedorGenerosDinamicos.appendChild(liGenero)
-        let botonGenero = document.getElementById(`${genero}`)
-        botonGenero.addEventListener("click", () => busquedaGenero(e, botonGenero.value))
-        }
-    )
+function agregarAlCarrito(element) {
+    console.log(element.target.id);
+    let elementoAgregado = juegos.find(juego => juego.id === Number(element.target.id));
+    carrito.push({
+        id: elementoAgregado.id,
+        title: elementoAgregado.title,
+        precio: elementoAgregado.precio
+    });
+    localStorage.setItem("carrito", JSON.stringify(carrito))
 }
 
+
+
+
+function comprar() {
+    carrito = []
+    localStorage.setItem("carrito",JSON.stringify(carrito))
+    // modalCompra() que todavía falta implementar, usar sweet alert
+
+    //despues del modal se tiene que renderizar el carrito de nuevo!!
+}
+
+function busquedaGenero(arrayDeElementos, valorFiltro) {
+    let filtrado = arrayDeElementos.filter(elemento => elemento.genre.includes(valorFiltro))
+    return renderizar(filtrado)
+}
+
+function busquedaNombre(arrayDeElementos, valorFiltro) {
+    let filtrado = arrayDeElementos.filter(elemento => (elemento.title.toLowerCase()).includes(valorFiltro.toLowerCase()))
+    return renderizar(filtrado)
+}
+
+// funciones de renderizado
 function renderizar(arrayDeElementos) {
     let cartas = document.getElementById("cartas")
     cartas.innerHTML = ''
@@ -59,14 +76,15 @@ function renderizar(arrayDeElementos) {
     cartas.innerHTML = '<h3>Explora nuestro catálogo</h3>'
         arrayDeElementos.forEach(element => {
             let cartaElemento = document.createElement("div")
-            cartaElemento.className = "cartaElemento card col-3"
+            cartaElemento.className = "cartaElemento card col-4 px-0"
             cartaElemento.innerHTML = `
             <img src="img/unknown.webp" class="card-img-top" alt="portada de juego">
             <div class="card-body">
                 <h5 class="card-title">${element.title}</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                card's content.</p>
+                <div>
                 <a href="#" id='${element.id}' class="btn btn-primary">Añadir al carrito</a>
+                <span class="btn btn-primary " disabled>${element.precio}</span>
+                </div>
             </div>
             `
             cartas.appendChild(cartaElemento)
@@ -81,41 +99,58 @@ function renderizar(arrayDeElementos) {
     }
 }
 
-function agregarAlCarrito(element) {
-    console.log(element.target.id);
-    let elementoAgregado = juegos.find(juego => juego.id === Number(element.target.id));
-    carrito.push({
-        id: elementoAgregado.id,
-        title: elementoAgregado.title,
-        precio: elementoAgregado.precio
-    });
-    let carritoStorage = "carrito";
-    localStorage.setItem(carritoStorage, JSON.stringify(carrito));
-    renderizarCarrito(carrito);
-}
-
 function renderizarCarrito(carrito) {
     let contenedorCarrito = document.getElementById("carrito")
     contenedorCarrito.innerHTML = ''
-    carrito.forEach(element => {
-        let cartaCarrito = document.createElement("div")
-        cartaCarrito.innerHTML = `<img src="img/unknown.webp" class="card-img-top" alt="portada de juego">
-        <h4>${element.title}</h4>
-        <h4>${element.precio}</h4>
-        `
-        contenedorCarrito.appendChild(cartaCarrito)
-    });
+    if (carrito.length>0) {
+        let precioTotal = 0  
+        carrito.forEach(element => {
+            precioTotal += element.precio
+            let cartaCarrito = document.createElement("li")
+            cartaCarrito.classList = 'list-group-item d-flex justify-content-between align-items-center'
+            cartaCarrito.innerHTML = `
+                <img src="img/unknown.webp" class="d-inline" alt="portada de juego">
+                <h4>${element.title}</h4>
+                <h4 class="pe-4">${element.precio}</h4>
+            `
+            contenedorCarrito.appendChild(cartaCarrito)
+        })
+
+        let botonComprar = document.createElement("button")
+        botonComprar.classList = 'botonComprar'
+        botonComprar.innerHTML = "Comprar"
+        contenedorCarrito.appendChild(botonComprar)
+        botonComprar.addEventListener("click",comprar)
+
+        displayPrecioTotal = document.createElement("button")
+        displayPrecioTotal.classList = 'button displayPrecio'
+        displayPrecioTotal.innerHTML = `${precioTotal}`
+        displayPrecioTotal.disabled = true
+        contenedorCarrito.appendChild(displayPrecioTotal)
+
+    } else {
+        contenedorCarrito.innerHTML = '<h3>Parece que todavia no has agregado ningun juego al carrito... <br> Descubre los mejores titulos en la pagina principal!</h3>'
+    }
 }
 
-
-function busquedaGenero(arrayDeElementos, valorFiltro) {
-    let filtrado = arrayDeElementos.filter(elemento => elemento.genre.includes(valorFiltro))
-    return renderizar(filtrado)
-}
-
-function busquedaNombre(arrayDeElementos, valorFiltro) {
-    let filtrado = arrayDeElementos.filter(elemento => elemento.title.includes(valorFiltro))
-    return renderizar(filtrado)
+function botonGeneroDinamico(e) {
+    let contenedorGenerosDinamicos = document.getElementById('contenedorGenerosDinamicos')
+    contenedorGenerosDinamicos.innerHTML = ''
+    let generos = []
+    e.forEach(element => {
+        !generos.includes(element.genre) ? generos.push(element.genre) : null
+            }
+        )
+    generos.forEach(genero => {
+        if (genero != "Utilities"){
+                let liGenero = document.createElement('li')
+                liGenero.innerHTML = `<button id="${genero}" value="${genero}" class="w-100">${genero}</button>`
+                contenedorGenerosDinamicos.appendChild(liGenero)
+                let botonGenero = document.getElementById(`${genero}`)
+                botonGenero.addEventListener("click", () => busquedaGenero(e, botonGenero.value))
+            }
+        }
+    )
 }
 
 function mostrarOcultar() {
@@ -123,17 +158,5 @@ function mostrarOcultar() {
     let contenedorCarrito = document.getElementById("carrito")
     contenedorElementos.classList.toggle("oculto")
     contenedorCarrito.classList.toggle("oculto")
+    renderizarCarrito(carrito)
 }
-
-
-
-
-
-
-
-
-
-
-//inicializacion de pagina
-
-

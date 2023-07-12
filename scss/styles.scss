@@ -1,37 +1,124 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500;700&display=swap');
 
-*{
-    font-family: Roboto; 
+
+$color-1:rgb(10, 110, 189);
+$color-2:rgb(90, 150, 227);
+$color-3:rgb(161, 194, 241);
+$color-4:rgb(244, 238, 224);
+
+
+
+
+* {
+    font-family: Roboto !important;
     font-weight: 300;
+    border-radius: 0 !important;
 }
 
-html{
+html {
     margin: 0;
     padding: 0;
 }
 
-nav{
-    font-weight: 700!important;
+body {
+    background-color: $color-2;
+    main{
+        h3{
+            color: $color-4;
+            margin: 0 0.3em;
+        }
+        #cartas{
+            padding: 1em 1em;
+            margin: 0;
+        }
+        .cartaElemento{
+            background-color: $color-4;
+            .btn-primary{
+                background-color: rgb(255, 96, 0);
+                border: 0;
+            }
+            span{
+                font-weight: 700;
+                background-color: rgb(255, 96, 0);
+                pointer-events: none;
+            }
+        }
+    }
 }
 
-#whiffPageLogo{
-    fill:rgb(67, 112, 112);
+#contenedorGenerosDinamicos {
+    background-color: $color-2;
+    li button{
+        background-color: $color-3;
+        color:$color-1;
+        font-weight: 500;
+        &:hover{
+            background-color:$color-1!important;
+            color:$color-4!important;
+        }  
+    }
+}
+
+.miNavbar {
+    padding: 0;
+    background-color: $color-1;
+    margin-bottom: 1em;
+    a{
+        &:hover{
+            color: $color-4;
+        }
+        navbar-brand{
+            padding: 0!important;
+        }
+    }
+}
+
+.navButton {
+    a {
+        color: $color-4;
+        font-size: 1.25em;
+        &:hover,
+        &:active,
+        &:focus {
+            color: $color-4 !important;
+        }
+    }
+
+}
+
+#whiffPageLogo {
+    fill: $color-4;
     height: 4em;
 }
 
-#cartas{
-    width: 100%;
-}
 
-.oculto{
-    display:none
+
+.oculto {
+    display: none!important
 }
 
 #carrito {
-    img{
-        width: 30vw;
-        display: flex;
+    margin:3em;
+    padding: 1em;
+    background-color: $color-3;
+    li{
+        margin: 0.5em 0;
+        padding: 0;
+        height: 20vh;
+        background-color: $color-4;
+        img{
+            height: 20vh;
+        }
+        h4{
+            color:$color-1
+        }
+    }
+    h3{
+        text-align: center;
     }
 }
 
 
+button,input{
+    background: $color-4 !important 
+}
