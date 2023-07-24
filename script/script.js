@@ -1,50 +1,40 @@
-/* let productos = [] */
-
 const localUrl = "./db.json"
-
+let productos = [];
 let carritoJSON = JSON.parse(localStorage.getItem("carrito"));
 let carrito = carritoJSON ? carritoJSON : [];
-renderizarCarrito(carrito);
 
-/* function programaPrincipal() {
-    obtenerDB(localUrl)
-    botonCarrito = document.getElementById("botonCarrito");
-    botonCarrito.addEventListener("click", mostrarOcultar);
-    let botonBusqueda = document.getElementById("botonBusqueda");
-    let inputBusqueda = document.getElementById("inputBusqueda");
-    botonBusqueda.addEventListener("click", () =>
-        busquedaNombre(productos, inputBusqueda.value)
-    );
-    botonGeneroDinamico(productos);
-    renderizar(productos);
+
+async function obtenerDB(url) {
+    response = await fetch(url)
+    data = await response.json()
+    return data.productos
 }
- */
 
 async function programaPrincipal() {
     try {
-      const productos = await obtenerDB(localUrl);
-      botonCarrito = document.getElementById("botonCarrito");
-      botonCarrito.addEventListener("click", mostrarOcultar);
-      let botonBusqueda = document.getElementById("botonBusqueda");
-      let inputBusqueda = document.getElementById("inputBusqueda");
-      botonBusqueda.addEventListener("click", () =>
-        busquedaNombre(productos, inputBusqueda.value)
-      );
-      botonGeneroDinamico(productos);
-      console.log(productos)
-      renderizar(productos);
+        productos = await obtenerDB(localUrl);
+        botonCarrito = document.getElementById("botonCarrito");
+        botonCarrito.addEventListener("click", mostrarOcultar);
+        let botonBusqueda = document.getElementById("botonBusqueda");
+        let inputBusqueda = document.getElementById("inputBusqueda");
+        botonBusqueda.addEventListener("click", () =>
+            busquedaNombre(productos, inputBusqueda.value)
+        );
+        console.log(productos)
+        botonGeneroDinamico(productos);
+        renderizar(productos);
     } catch (error) {
-      console.error("Error al obtener los datos:", error);
+        console.error("Error al obtener los datos:", error);
     }
-  }
+}
 
-programaPrincipal();
+
 
 function agregarAlCarrito(element) {
-    console.log(element.target.id);
-    let elementoAgregado = juegos.find(
-        (juego) => juego.id === Number(element.target.id)
+    let elementoAgregado = productos.find(
+        (producto) => producto.id === Number(element.target.id)
     );
+    console.log(productos)
     carrito.push({
         id: elementoAgregado.id,
         title: elementoAgregado.title,
@@ -52,37 +42,8 @@ function agregarAlCarrito(element) {
     });
     localStorage.setItem("carrito", JSON.stringify(carrito));
     tostadaProductoAgregado(elementoAgregado)
-    //acaaaa
 }
 
-function comprar() {
-    Swal.fire({
-        title: "Muchas gracias por comprar en Whiff",
-    });
-    carrito = [];
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-
-    // modalCompra() que todavía falta implementar, usar sweet alert
-    renderizarCarrito(carrito);
-
-    //despues del modal se tiene que renderizar el carrito de nuevo!!
-}
-
-function busquedaGenero(arrayDeElementos, valorFiltro) {
-    let filtrado = arrayDeElementos.filter((elemento) =>
-        elemento.genre.includes(valorFiltro)
-    );
-    return renderizar(filtrado);
-}
-
-function busquedaNombre(arrayDeElementos, valorFiltro) {
-    let filtrado = arrayDeElementos.filter((elemento) =>
-        elemento.title.toLowerCase().includes(valorFiltro.toLowerCase())
-    );
-    return renderizar(filtrado);
-}
-
-// funciones de renderizado
 function renderizar(arrayDeElementos) {
     let cartas = document.getElementById("cartas");
     cartas.innerHTML = "";
@@ -92,7 +53,7 @@ function renderizar(arrayDeElementos) {
             let cartaElemento = document.createElement("div");
             cartaElemento.className = "cartaElemento card col-4 px-0";
             cartaElemento.innerHTML = `
-            <img src="img/unknown.webp" class="card-img-top" alt="portada de juego">
+            <img src="img/${element.id}.jpg" class="card-img-top" alt="portada de juego">
             <div class="card-body">
                 <h5 class="card-title">${element.title}</h5>
                 <div>
@@ -114,6 +75,32 @@ function renderizar(arrayDeElementos) {
     }
 }
 
+function comprar() {
+    Swal.fire({
+        title: "Muchas gracias por comprar en Whiff",
+    });
+    carrito = [];
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    renderizarCarrito(carrito);
+}
+
+function busquedaGenero(arrayDeElementos, valorFiltro) {
+    let filtrado = arrayDeElementos.filter((elemento) =>
+        elemento.genre.includes(valorFiltro)
+    );
+    return renderizar(filtrado);
+}
+
+function busquedaNombre(arrayDeElementos, valorFiltro) {
+    let filtrado = arrayDeElementos.filter((elemento) =>
+        elemento.title.toLowerCase().includes(valorFiltro.toLowerCase())
+    );
+    return renderizar(filtrado);
+}
+
+
+
+// funciones de renderizado
 function renderizarCarrito(carrito) {
     let contenedorCarrito = document.getElementById("carrito");
     contenedorCarrito.innerHTML = "";
@@ -125,9 +112,9 @@ function renderizarCarrito(carrito) {
             cartaCarrito.classList =
                 "list-group-item d-flex justify-content-between align-items-center";
             cartaCarrito.innerHTML = `
-                <img src="img/unknown.webp" class="d-inline" alt="portada de juego">
+                <img src="img/${element.id}.jpg" class="d-inline" alt="portada de juego">
                 <h4>${element.title}</h4>
-                <h4 class="pe-4">${element.precio}</h4>
+                <h4 class="pe-4">$${element.precio}</h4>
             `;
             contenedorCarrito.appendChild(cartaCarrito);
         });
@@ -140,7 +127,7 @@ function renderizarCarrito(carrito) {
 
         displayPrecioTotal = document.createElement("button");
         displayPrecioTotal.classList = "button displayPrecio";
-        displayPrecioTotal.innerHTML = `${precioTotal}`;
+        displayPrecioTotal.innerHTML = `$${precioTotal}`;
         displayPrecioTotal.disabled = true;
         contenedorCarrito.appendChild(displayPrecioTotal);
     } else {
@@ -181,24 +168,14 @@ function mostrarOcultar() {
 
 function tostadaProductoAgregado(juego) {
     Toastify({
-        text:`"${juego.title}" agregado al carrito`,
-        position:'right',
-        duration:2500,
+        text: `"${juego.title}" agregado al carrito`,
+        position: 'right',
+        duration: 2500,
     }).showToast()
 }
 
-async function obtenerDB(url) {
-    /* fetch(url)
-    .then(response => response.json())
-    .then(data => {
-        productos = data.productos
-        console.log(productos)
-    }) */
-    response = await fetch(url)
-    data = await response.json()
-    return data.productos
-}
 
-
+renderizarCarrito(carrito);
+programaPrincipal();
 
 

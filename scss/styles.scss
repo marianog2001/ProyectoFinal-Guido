@@ -32,6 +32,9 @@ body {
             margin: 0;
         }
         .cartaElemento{
+            .card-img-top{
+                height: 25em;
+            }
             background-color: $color-4;
             .btn-primary{
                 background-color: rgb(255, 96, 0);
@@ -98,6 +101,7 @@ body {
 }
 
 #carrito {
+    border: 5px solid $color-1;
     margin:3em;
     padding: 1em;
     background-color: $color-3;
@@ -121,4 +125,11 @@ body {
 
 button,input{
     background: $color-4 !important 
+}
+
+.displayPrecio, .botonComprar{
+    font-weight: 500;
+    color:black;
+    border: 2px solid black;
+    background-color: rgb(82, 252, 82)!important;
 }

@@ -24,6 +24,9 @@ body main #cartas {
 body main .cartaElemento {
   background-color: rgb(244, 238, 224);
 }
+body main .cartaElemento .card-img-top {
+  height: 25em;
+}
 body main .cartaElemento .btn-primary {
   background-color: rgb(255, 96, 0);
   border: 0;
@@ -77,6 +80,7 @@ body main .cartaElemento span {
 }
 
 #carrito {
+  border: 5px solid rgb(10, 110, 189);
   margin: 3em;
   padding: 1em;
   background-color: rgb(161, 194, 241);
@@ -99,6 +103,13 @@ body main .cartaElemento span {
 
 button, input {
   background: rgb(244, 238, 224) !important;
+}
+
+.displayPrecio, .botonComprar {
+  font-weight: 500;
+  color: black;
+  border: 2px solid black;
+  background-color: rgb(82, 252, 82) !important;
 }
 
 /*# sourceMappingURL=style.css.map */
